@@ -8,7 +8,7 @@ import requests
 
 def get_ordered_dict():
     tweets = []
-    for line in open('bitcoin.json', 'r'):
+    for line in open('new_tweets_stream.txt', 'r'):
         tweets.append(json.loads(line))
         list_dict = {}
     for tweet in tweets:
@@ -21,7 +21,7 @@ def get_ordered_dict():
             list_dict[t_date_time.minute].append(tweet)
     return list_dict
 
-def calc_sentiment(texts):
+def calc_sentiment(texts, tweets_count):
     neg = 0
     neu = 0
     pos = 0
@@ -30,28 +30,37 @@ def calc_sentiment(texts):
         neg += vs['neg']
         neu += vs['neu']
         pos += vs['pos']
+    neg_percent = (neg * 100)/tweets_count
+    neu_percent = (neu * 100)/tweets_count
+    pos_percent = (pos * 100)/tweets_count
 
-    tweets_date.write("neg = " + str("%.2f" % neg) + ", " + "neu = " +  str("%.2f" % neu) +  ", " +  "pos = " + str("%.2f" % pos)  +  "\n" )
+    tweets_date.write("neg = " + str("%.2f" % neg_percent) + ", " + "neu = " +  str("%.2f" % neu_percent) +  ", " +  "pos = " + str("%.2f" % pos_percent)  +  "\n" )
 
 
 def calc_bitcoin_price(timestamp):
     url = 'https://min-api.cryptocompare.com/data/histominute?fsym=BTC&tsym=USD&limit=1&e=CCCAGG&toTs=' + timestamp
     response = requests.get(url)
     result = json.loads(response.text)
-    close_price_variation = result["Data"][0]['close'] - result["Data"][1]['close']
-    high_price_variation = result["Data"][0]['high'] - result["Data"][1]['high']
-    low_price_variation = result["Data"][0]['low'] - result["Data"][1]['low']
-    open_price_variation = result["Data"][0]['open'] - result["Data"][1]['open']
-    volumeFrom_variation = result["Data"][0]['volumefrom'] - result["Data"][1]['volumefrom']
-    volumeTo_variation = result["Data"][0]['volumeto'] - result["Data"][1]['volumeto']
-    tweets_date.write("close_price_variation = " + str("%.2f" % close_price_variation) + ", "
-     + "high_price_variation = " +  str("%.2f" % high_price_variation) +  ", "
-     + "low_price_variation = " + str("%.2f" % low_price_variation)  +  ", "
-     + "open_price_variation = " + str("%.2f" % open_price_variation) +  ", "
-     + "volumeFrom_variation = " + str("%.2f" % volumeFrom_variation) + ", "
-     + "volumeTo_variation = " + str("%.2f" % volumeTo_variation) + ", " )
+    close_price_variation = (result["Data"][1]['close'] - result["Data"][0]['close'])/result["Data"][0]['close']
+    close_price_variation *= 100
+    high_price_variation = (result["Data"][1]['high'] - result["Data"][0]['high'])/result["Data"][0]['close']
+    high_price_variation *= 100
+    low_price_variation = (result["Data"][1]['low'] - result["Data"][0]['low'])/result["Data"][0]['close']
+    low_price_variation *= 100
+    open_price_variation = (result["Data"][1]['open'] - result["Data"][0]['open'])/result["Data"][0]['close']
+    open_price_variation *= 100
+    volumeFrom_variation = (result["Data"][1]['volumefrom'] - result["Data"][0]['volumefrom'])/result["Data"][0]['close']
+    volumeFrom_variation *= 100
+    volumeTo_variation = (result["Data"][1]['volumeto'] - result["Data"][0]['volumeto'])/result["Data"][0]['close']
+    volumeTo_variation *= 100
+    tweets_date.write("close_price_variation = " + str("%.4f" % close_price_variation) + ", "
+     + "high_price_variation = " +  str("%.4f" % high_price_variation) +  ", "
+     + "low_price_variation = " + str("%.4f" % low_price_variation)  +  ", "
+     + "open_price_variation = " + str("%.4f" % open_price_variation) +  ", "
+     + "volumeFrom_variation = " + str("%.4f" % volumeFrom_variation) + ", "
+     + "volumeTo_variation = " + str("%.4f" % volumeTo_variation) + ", " )
 
-tweets_date = open('tweets_date.txt', 'w')
+tweets_date = open('new_tweets_date.txt', 'w')
 analyzer = SentimentIntensityAnalyzer()
 list_dict = get_ordered_dict()
 for key in sorted(list_dict):
@@ -66,4 +75,4 @@ for key in sorted(list_dict):
         texts = []
         for tweet in list_dict[key]:
             texts.append(tweet["text"])
-        calc_sentiment(texts)
+        calc_sentiment(texts, tweets_count)
