@@ -89,6 +89,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+stream_sources/
 
 # Spyder project settings
 .spyderproject
