@@ -9,7 +9,7 @@ client = Twitter::Streaming::Client.new do |config|
 end
 
 
-tweets_stream = File.open("tweets_stream.txt", "a")
+tweets_stream = File.open("/home/nicacio_notebook/bitcoin_sentimental_analisys/tweets_stream.txt", "a")
 
 topics = ["bitcoin", "btc", "satoshi"]
 client.filter(track: topics.join(",")) do |object|
