@@ -9,21 +9,19 @@ import operator
 import pdb
 
 def get_ordered_dict():
-    tweets = []
-    for line in open('stream_sources/2018-09-23-09-29-tweets-stream.txt', 'r'):
+    list_dict = {}
+    for line in open('stream_sources/2018-09-08.json', 'r'):
         try:
-            tweets.append(json.loads(line))
+            tweet = json.loads(line)
+            t = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweet[ "created_at"],'%a %b %d %H:%M:%S +0000 %Y'))
+            t_date_time = datetime.strptime(t, '%Y-%m-%d %H:%M:%S')
+            if t_date_time.minute in list_dict:
+                list_dict[t_date_time.minute].append(tweet)
+            else:
+                list_dict[t_date_time.minute] =  []
+                list_dict[t_date_time.minute].append(tweet)
         except ValueError:  # includes simplejson.decoder.JSONDecodeError
             print('Decoding JSON has failed')
-        list_dict = {}
-    for tweet in tweets:
-        t = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweet[ "created_at"],'%a %b %d %H:%M:%S +0000 %Y'))
-        t_date_time = datetime.strptime(t, '%Y-%m-%d %H:%M:%S')
-        if t_date_time.minute in list_dict:
-            list_dict[t_date_time.minute].append(tweet)
-        else:
-            list_dict[t_date_time.minute] =  []
-            list_dict[t_date_time.minute].append(tweet)
     return list_dict
 
 def calc_sentiment(texts, tweets_count):
@@ -73,7 +71,7 @@ def calc_bitcoin_price(timestamp):
 
 
 
-tweets_date = open('results/2018-09-17-tweets.csv', 'a')
+tweets_date = open('results/2018-10-03.csv', 'a')
 analyzer = SentimentIntensityAnalyzer()
 list_dict = get_ordered_dict()
 
