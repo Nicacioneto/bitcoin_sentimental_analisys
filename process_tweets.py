@@ -94,7 +94,7 @@ def calc_bitcoin_price(timestamp):
                       + str("%.4f" % volumeFrom_variation) + ", ")
 
 
-tweets_date = open('results/test2.csv', 'a')
+tweets_date = open('results/xag.csv', 'a')
 analyzer = SentimentIntensityAnalyzer()
 list_dict = get_ordered_dict()
 for key in list_dict:
