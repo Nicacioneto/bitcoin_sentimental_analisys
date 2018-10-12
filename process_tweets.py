@@ -11,7 +11,7 @@ import requests
 
 def get_ordered_dict():
     list_dict = {}
-    for line in open('stream_sources/2018-10-03/xag', 'r'):
+    for line in open('stream_sources/2018-10-09-ts.txt', 'r'):
         try:
             tweet = json.loads(line)
             t = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(
@@ -22,6 +22,7 @@ def get_ordered_dict():
             else:
                 list_dict[t] = []
                 list_dict[t].append(tweet)
+            print('Decoding JSON has success')
         except ValueError:  # includes simplejson.decoder.JSONDecodeError
             print('Decoding JSON has failed')
     return list_dict
@@ -94,7 +95,7 @@ def calc_bitcoin_price(timestamp):
                       + str("%.4f" % volumeFrom_variation) + ", ")
 
 
-tweets_date = open('results/xag.csv', 'a')
+tweets_date = open('results/9.csv', 'a')
 analyzer = SentimentIntensityAnalyzer()
 list_dict = get_ordered_dict()
 for key in list_dict:
