@@ -6,11 +6,6 @@ __pycache__/
 # C extensions
 *.so
 
-# Data Analysis results
-results/weka/
-results/weka_close_price_variation/
-tweets_stream.txt
-
 #Environment Variables Files
 twitter_credentials.py
 
