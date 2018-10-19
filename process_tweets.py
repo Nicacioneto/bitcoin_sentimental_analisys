@@ -11,7 +11,7 @@ import requests
 
 def get_ordered_dict():
     list_dict = {}
-    for line in open('stream_sources/2018-10-09-ts.txt', 'r'):
+    for line in open('stream_sources/test_data/2018-10-13-ts.txt', 'r'):
         try:
             tweet = json.loads(line)
             t = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(
@@ -95,7 +95,7 @@ def calc_bitcoin_price(timestamp):
                       + str("%.4f" % volumeFrom_variation) + ", ")
 
 
-tweets_date = open('results/9.csv', 'a')
+tweets_date = open('test_data/13.csv', 'a')
 analyzer = SentimentIntensityAnalyzer()
 list_dict = get_ordered_dict()
 for key in list_dict:
