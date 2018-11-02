@@ -7,6 +7,7 @@ import plotly
 import plotly.plotly as py
 import plotly.graph_objs as go
 import pandas as pd
+import requests
 
 def get_ordered_dict():
     list_dict = {}
@@ -57,14 +58,15 @@ def build_graphs():
     #Building Sentiment Graph
     df = pd.read_csv("dataframe.csv")
     trace2 = go.Bar(x=df.t0, y=df.indicator, xaxis='x2', yaxis='y2', marker=dict(
-        color=make_color(df.indicator)),)
+        color=make_color(df.indicator), colorscale='Viridis', showscale=True),)
 
     layout = go.Layout(
         title = "Candlestick X SentimentGraph",
         xaxis=dict(rangeslider=dict(visible=False), domain=[0, 1]),
         yaxis=dict(domain=[0.5, 1]),
         xaxis2=dict(domain=[0, 1]),
-        yaxis2=dict(domain=[0, 0.45], anchor='x2')
+        yaxis2=dict(domain=[0, 0.45], anchor='x2'),
+        showscale=dict(domain=[0, 0.45])
     )
 
     # fig = go.Figure(data=data, layout=layout)
@@ -77,14 +79,9 @@ def build_graphs():
 
 
 def make_color(indicator_data):
-    previous_indicator = 0.0
     color = []
-    for indicator in indicator_data:
-        if float(indicator) > previous_indicator:
-            color.append('green')
-        else:
-            color.append('red')
-        previous_indicator = indicator
+    for i in indicator_data:
+        color.append(float(i))
     return color
 
 
