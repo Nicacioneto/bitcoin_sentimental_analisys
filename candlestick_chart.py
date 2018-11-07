@@ -9,16 +9,17 @@ import plotly.graph_objs as go
 import pandas as pd
 import requests
 import sys
+import os
 
 def write_csv_header():
-    csv = open(sys.argv[1], 'a')
+    csv = open(os.environ['HOME'] + '/bitcoin_sentimental_analisys/' + sys.argv[1], 'a')
     csv.write("t0,t1,t1_normalized,tweets_count,indicator\n")
     csv.close()
 
 def write_csv_body(list_dict):
     last_tweet_timestamp = ""
     analyzer = SentimentIntensityAnalyzer()
-    csv = open(sys.argv[1], 'a')
+    csv = open(os.environ['HOME'] + '/bitcoin_sentimental_analisys/' + sys.argv[1], 'a')
     for key in list_dict:
         t0 = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(
             list_dict[key][0]["created_at"], '%a %b %d %H:%M:%S +0000 %Y'))
@@ -45,7 +46,7 @@ def write_csv_body(list_dict):
 
 def get_ordered_dict(filename):
     list_dict = {}
-    for line in open('stream_sources/' + filename, 'r'):
+    for line in open(os.environ['HOME'] + '/bitcoin_sentimental_analisys/stream_sources/' + filename, 'r'):
         try:
             tweet = json.loads(line)
             t = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(
