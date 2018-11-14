@@ -12,14 +12,14 @@ import sys
 import os
 
 def write_csv_header():
-    csv = open(os.environ['HOME'] + '/bitcoin_sentimental_analisys/' + sys.argv[1], 'a')
+    csv = open(os.environ['HOME'] + '/Desktop/bitcoin_sentimental_analisys/' + sys.argv[1], 'a')
     csv.write("t0,t1,t1_normalized,tweets_count,indicator\n")
     csv.close()
 
 def write_csv_body(list_dict):
     last_tweet_timestamp = ""
     analyzer = SentimentIntensityAnalyzer()
-    csv = open(os.environ['HOME'] + '/bitcoin_sentimental_analisys/' + sys.argv[1], 'a')
+    csv = open(os.environ['HOME'] + '/Desktop/bitcoin_sentimental_analisys/' + sys.argv[1], 'a')
     for key in list_dict:
         t0 = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(
             list_dict[key][0]["created_at"], '%a %b %d %H:%M:%S +0000 %Y'))
@@ -46,7 +46,7 @@ def write_csv_body(list_dict):
 
 def get_ordered_dict(filename):
     list_dict = {}
-    for line in open(os.environ['HOME'] + '/bitcoin_sentimental_analisys/stream_sources/' + filename, 'r'):
+    for line in open(os.environ['HOME'] + '/Desktop/bitcoin_sentimental_analisys/stream_sources/' + filename, 'r'):
         try:
             tweet = json.loads(line)
             t = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(
@@ -85,7 +85,7 @@ def build_graphs(timestamp):
                             open=df.open,
                             high=df.high,
                             low=df.low,
-                            close=df.close)
+                            close=df.close, xaxis='x')
 
     # data = [trace1]
     # fig = go.Figure(data=data, layout=layout)
@@ -93,15 +93,14 @@ def build_graphs(timestamp):
 
     #Building Sentiment Graph
     df = pd.read_csv(sys.argv[1])
-    trace2 = go.Bar(x=df.t1_normalized, y=df.indicator, xaxis='x2', yaxis='y2', marker=dict(
+    trace2 = go.Bar(x=df.t1_normalized, y=df.indicator, xaxis='x', yaxis='y2', marker=dict(
         color=make_color(df.indicator), colorscale='Viridis', showscale=True),)
 
     layout = go.Layout(
         title = "Candlestick X SentimentGraph",
         xaxis=dict(rangeslider=dict(visible=False), domain=[0, 1]),
         yaxis=dict(domain=[0.5, 1]),
-        xaxis2=dict(domain=[0, 1]),
-        yaxis2=dict(domain=[0, 0.45], anchor='x2')
+        yaxis2=dict(domain=[0, 0.45], anchor='x')
     )
 
     # fig = go.Figure(data=data, layout=layout)
@@ -110,8 +109,8 @@ def build_graphs(timestamp):
 
     data = [trace1, trace2]
     fig = go.Figure(data=data, layout=layout)
-    py.iplot(fig, filename=sys.argv[1][0:15])
-
+    plotly.offline.plot(fig, filename=sys.argv[1][0:15]+ ".html", auto_open=True)
+    # py.iplot(fig, filename=sys.argv[1][0:15])
 
 def make_color(indicator_data):
     color = []
