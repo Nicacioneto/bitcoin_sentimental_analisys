@@ -13,7 +13,7 @@ import os
 
 def write_csv_header():
     csv = open(os.environ['HOME'] + '/Desktop/bitcoin_sentimental_analisys/' + sys.argv[1], 'a')
-    csv.write("t0,t1,t1_normalized,tweets_count,indicator\n")
+    csv.write("t0,t1,t1_normalized,tweets_count,pos,neg,neu,indicator\n")
     csv.close()
 
 def write_csv_body(list_dict):
@@ -36,9 +36,9 @@ def write_csv_body(list_dict):
         for tweet in list_dict[key]:
             texts.append(tweet["text"])
 
-        score = calc_sentiment(texts, analyzer)
-        indicator = score / tweets_count
-        csv.write(t0 + ", " + t1 + ", " + str(t1_normalized) + ", " + str(tweets_count) + ", " + str('%.3f' % indicator) + "\n")
+        scores = calc_sentiment(texts, analyzer)
+        indicator = scores[0] / tweets_count
+        csv.write(t0 + ", " + t1 + ", " + str(t1_normalized) + ", " + str(tweets_count) + ", " + str(scores[1]) + ", " + str(scores[2]) + ", " + str(scores[3]) + ", " + str('%.3f' % indicator) + "\n")
         last_tweet_timestamp = (t1_normalized - timedelta(hours=3)).timestamp()
     csv.close()
     return last_tweet_timestamp
@@ -46,7 +46,7 @@ def write_csv_body(list_dict):
 
 def get_ordered_dict(filename):
     list_dict = {}
-    for line in open(os.environ['HOME'] + '/Desktop/bitcoin_sentimental_analisys/stream_sources/' + filename, 'r'):
+    for line in open(os.environ['HOME'] + '/Documents/novembro/' + filename, 'r'):
         try:
             tweet = json.loads(line)
             t = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(
@@ -64,18 +64,30 @@ def get_ordered_dict(filename):
 
 
 def calc_sentiment(texts, analyzer):
-    score = 0
+    scores = []
+    total_score = 0
+    pos = 0
+    neg = 0
+    neu = 0
     for text in texts:
-        score_pos = analyzer.polarity_scores(text)
-        score += score_pos['compound']
-    return score
+        compound_score = analyzer.polarity_scores(text)
+        total_score += compound_score['compound']
+        if(compound_score['compound'] >= 0.05):
+            pos +=1
+        elif(compound_score['compound'] > -0.05 and compound_score['compound'] < 0.05):
+            neu += 1
+        else:
+            neg += 1
+
+    scores.extend((total_score, pos, neg, neu))
+    return scores
 
 
 def build_graphs(timestamp):
     print(timestamp)
     # Building Candlestick Graph
     plotly.tools.set_credentials_file(username='Nicacioneto', api_key='7K1twHAOzbFqTaYOwUU0')
-    url = "https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=USD&limit=23&toTs=" + str(timestamp)
+    url = "https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=USD&limit=263&toTs=" + str(timestamp)
     response = requests.get(url)
     result = json.loads(response.text)['Data']
     for r in result:
@@ -94,7 +106,10 @@ def build_graphs(timestamp):
     #Building Sentiment Graph
     df = pd.read_csv(sys.argv[1])
     trace2 = go.Bar(x=df.t1_normalized, y=df.indicator, xaxis='x', yaxis='y2', marker=dict(
-        color=make_color(df.indicator), colorscale='Viridis', showscale=True),)
+        color=make_color(df.indicator), colorscale='Viridis', colorbar = dict(
+            title = 'Sentimento',
+            titleside = 'top',
+        )),)
 
     layout = go.Layout(
         title = "Candlestick X SentimentGraph",
@@ -109,8 +124,8 @@ def build_graphs(timestamp):
 
     data = [trace1, trace2]
     fig = go.Figure(data=data, layout=layout)
-    plotly.offline.plot(fig, filename=sys.argv[1][0:15]+ ".html", auto_open=True)
-    # py.iplot(fig, filename=sys.argv[1][0:15])
+    # plotly.offline.plot(fig, filename=sys.argv[1][0:15]+ ".html", auto_open=True)
+    py.iplot(fig, filename=sys.argv[1][0:15])
 
 def make_color(indicator_data):
     color = []
@@ -121,13 +136,13 @@ def make_color(indicator_data):
 
 def main():
     write_csv_header()
-    filenames = [sys.argv[2]]
+    filenames = [sys.argv[2], sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6],sys.argv[7],sys.argv[8],sys.argv[9],sys.argv[10],sys.argv[11],sys.argv[12],sys.argv[13],sys.argv[14],sys.argv[15],sys.argv[16]]
     last_tweet_timestamp = ""
     for name in filenames:
         list_dict = get_ordered_dict(name)
         last_tweet_timestamp = write_csv_body(list_dict)
         list_dict = []
-    build_graphs(last_tweet_timestamp)
+    # build_graphs(last_tweet_timestamp)
 
 
 if __name__ == '__main__':
