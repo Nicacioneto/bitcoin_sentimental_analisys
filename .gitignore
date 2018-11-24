@@ -9,10 +9,6 @@ __pycache__/
 #Environment Variables Files
 twitter_credentials.py
 
-# Daemon files
-get_tweets.pid
-get_tweets_monitor.pid
-
 # Distribution / packaging
 .Python
 build/
@@ -96,7 +92,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-stream_sources/
+
 
 # Spyder project settings
 .spyderproject

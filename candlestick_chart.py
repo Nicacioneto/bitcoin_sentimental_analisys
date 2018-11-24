@@ -46,7 +46,7 @@ def write_csv_body(list_dict):
 
 def get_ordered_dict(filename):
     list_dict = {}
-    for line in open(os.environ['HOME'] + '/Documents/novembro/' + filename, 'r'):
+    for line in open(os.environ['HOME'] + '/Desktop/bitcoin_sentimental_analisys/stream_sources/' + filename, 'r'):
         try:
             tweet = json.loads(line)
             t = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(
