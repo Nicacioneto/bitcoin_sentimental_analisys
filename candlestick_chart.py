@@ -87,7 +87,7 @@ def build_graphs(timestamp):
     print(timestamp)
     # Building Candlestick Graph
     plotly.tools.set_credentials_file(username='Nicacioneto', api_key='7K1twHAOzbFqTaYOwUU0')
-    url = "https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=USD&limit=263&toTs=" + str(timestamp)
+    url = "https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=USD&limit=361&toTs=" + str(timestamp)
     response = requests.get(url)
     result = json.loads(response.text)['Data']
     for r in result:
@@ -97,7 +97,7 @@ def build_graphs(timestamp):
                             open=df.open,
                             high=df.high,
                             low=df.low,
-                            close=df.close, xaxis='x')
+                            close=df.close, name="Bitcoin", xaxis='x', visible=True)
 
     # data = [trace1]
     # fig = go.Figure(data=data, layout=layout)
@@ -105,18 +105,45 @@ def build_graphs(timestamp):
 
     #Building Sentiment Graph
     df = pd.read_csv(sys.argv[1])
-    trace2 = go.Bar(x=df.t1_normalized, y=df.indicator, xaxis='x', yaxis='y2', marker=dict(
+    trace2 = go.Bar(x=df.t1_normalized, y=df.indicator, name='Indicador', xaxis='x', yaxis='y2', marker=dict(
         color=make_color(df.indicator), colorscale='Viridis', colorbar = dict(
-            title = 'Sentimento',
+            x= 1.03,
+            y= 0.35,
+            len= 0.75,
+            thickness= 30,
+            title= 'Sentimento',
             titleside = 'top',
+            xpad= 10,
+            ypad= 10,
         )),)
 
-    layout = go.Layout(
-        title = "Candlestick X SentimentGraph",
-        xaxis=dict(rangeslider=dict(visible=False), domain=[0, 1]),
-        yaxis=dict(domain=[0.5, 1]),
-        yaxis2=dict(domain=[0, 0.45], anchor='x')
-    )
+
+    layout = {
+      "autosize": True,
+      "title": "Gráfico de Velas X Sentimento",
+      "xaxis": {
+        "anchor": "free",
+        "autorange": True,
+        "domain": [0, 1],
+        "rangeslider": {"visible": False},
+        "side": "bottom",
+        "type": "date"
+      },
+      "yaxis": {
+        "anchor": "free",
+        "autorange": True,
+        "domain": [0.5, 1],
+        "side": "left",
+        "title": "Preço"
+      },
+      "yaxis2": {
+        "anchor": "x",
+        "autorange": True,
+        "domain": [0, 0.45],
+        "title": "Sentimento",
+        "type": "linear"
+      }
+    }
 
     # fig = go.Figure(data=data, layout=layout)
     # data = [trace2]
