@@ -46,12 +46,12 @@ def write_csv_body(list_dict):
 
 def get_ordered_dict(filename):
     list_dict = {}
-    for line in open(os.environ['HOME'] + '/Desktop/bitcoin_sentimental_analisys/stream_sources/' + filename, 'r'):
+    for line in open(os.environ['HOME'] + '/Documents/outubro/' + filename, 'r'):
         try:
             tweet = json.loads(line)
             t = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(
                 tweet["created_at"], '%a %b %d %H:%M:%S +0000 %Y'))
-            t = t[8:13]
+            t = t[0:10]
             if t in list_dict:
                 list_dict[t].append(tweet)
             else:
@@ -133,10 +133,9 @@ def make_color(indicator_data):
         color.append(float(i))
     return color
 
-
 def main():
     write_csv_header()
-    filenames = [sys.argv[2], sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6],sys.argv[7],sys.argv[8],sys.argv[9],sys.argv[10],sys.argv[11],sys.argv[12],sys.argv[13],sys.argv[14],sys.argv[15],sys.argv[16]]
+    filenames = [sys.argv[2], sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6],sys.argv[7],sys.argv[8],sys.argv[9],sys.argv[10],sys.argv[11],sys.argv[12],sys.argv[13],sys.argv[14],sys.argv[15],sys.argv[16],sys.argv[17],sys.argv[18],sys.argv[19],sys.argv[20],sys.argv[21],sys.argv[22],sys.argv[23],sys.argv[24],sys.argv[25],sys.argv[26]]
     last_tweet_timestamp = ""
     for name in filenames:
         list_dict = get_ordered_dict(name)
