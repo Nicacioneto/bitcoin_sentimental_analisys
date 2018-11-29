@@ -112,6 +112,7 @@ def main():
     indicador = round(indicador, 3)
     final_date = rows[-1][2]
     financial_data = get_last_hour_financial_data(final_date)
+    plotly.tools.set_credentials_file(username='Nicacioneto', api_key='7K1twHAOzbFqTaYOwUU0')
     #update_sentimental_candlestick_graph(financial_data, indicador)
     update_positive_sentimental_graph(financial_data, scores[1])
     update_negative_sentimental_graph(financial_data, scores[2])
