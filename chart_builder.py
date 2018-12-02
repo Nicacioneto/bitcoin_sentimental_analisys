@@ -48,27 +48,27 @@ def get_last_hour_financial_data(final_date):
         r['time'] = datetime.datetime.utcfromtimestamp(r['time']).strftime('%Y-%m-%d %H:%M:%S')
     return financial_data
 
-# def build_sentimental_candlestick_graph(financial_data, indicador):
-#     plotly.tools.set_credentials_file(username='Nicacioneto', api_key='7K1twHAOzbFqTaYOwUU0')
-#     candlestick_data = Candlestick(x=[financial_data[-1]["time"]],
-#                                         open=[financial_data[-1]["open"]],
-#                                         high=[financial_data[-1]["high"]],
-#                                         low=[financial_data[-1]["low"]],
-#                                         close=[financial_data[-1]["close"]])
-    # sentiment_data = Bar(x=[financial_data[-1]["time"]], y=[indicador], marker=dict(
-    #     color=float(indicador), colorscale='Viridis', colorbar = dict(
-    #         x= 1.03,
-    #         y= 0.35,
-    #         len= 0.75,
-    #         thickness= 30,
-    #         title= 'Sentimento',
-    #         titleside = 'top',
-    #         xpad= 10,
-    #         ypad= 10,
-    #     )),)
+def update_sentimental_candlestick_graph(financial_data, indicador):
+    candlestick_data = Candlestick(x=[financial_data[-1]["time"]],
+                                        open=[financial_data[-1]["open"]],
+                                        high=[financial_data[-1]["high"]],
+                                        low=[financial_data[-1]["low"]],
+                                        close=[financial_data[-1]["close"]])
+    sentiment_data = Bar(x=[financial_data[-1]["time"]], y=[indicador], marker=dict(
+        color=float(indicador), colorscale='Viridis', colorbar = dict(
+            x= 1.03,
+            y= 0.35,
+            len= 0.75,
+            thickness= 30,
+            title= 'Sentimento',
+            titleside = 'top',
+            xpad= 10,
+            ypad= 10,
+        )),)
 
-    # data = [candlestick_data, sentiment_data]
-    # plot_url = py.plot(data, filename='candlestick_sentimental_grid', fileopt='extend')
+    data = [candlestick_data, sentiment_data]
+    print(data)
+    plot_url = py.plot(data, filename='candlestick_graph', fileopt='extend')
 
 def update_positive_sentimental_graph(financial_data, positive):
     trace1 = {
@@ -83,8 +83,8 @@ def update_positive_sentimental_graph(financial_data, positive):
       "type": "scatter"
     }
     data = Data([trace1, trace2])
-    print(data)
-    py.plot(data, filename='btc_positivos_test', fileopt='extend')
+    # print(data)
+    py.plot(data, filename='new_btc_positivos', fileopt='extend')
 
 
 def update_negative_sentimental_graph(financial_data, negative):
@@ -100,8 +100,8 @@ def update_negative_sentimental_graph(financial_data, negative):
       "type": "scatter"
     }
     data = Data([trace1, trace2])
-    print(data)
-    py.plot(data, filename='btc_negativos_test', fileopt='extend')
+    # print(data)
+    py.plot(data, filename='new_btc_negativos', fileopt='extend')
 
 
 def main():
@@ -115,7 +115,7 @@ def main():
     final_date = rows[-1][2]
     financial_data = get_last_hour_financial_data(final_date)
     plotly.tools.set_credentials_file(username='Nicacioneto', api_key='7K1twHAOzbFqTaYOwUU0')
-    #update_sentimental_candlestick_graph(financial_data, indicador)
+    update_sentimental_candlestick_graph(financial_data, indicador)
     update_positive_sentimental_graph(financial_data, scores[1])
     update_negative_sentimental_graph(financial_data, scores[2])
 
