@@ -72,34 +72,36 @@ def get_last_hour_financial_data(final_date):
 
 def update_positive_sentimental_graph(financial_data, positive):
     trace1 = {
-      "x": [ [financial_data[-1]["time"]] ],
-      "y": [ [financial_data[-1]["close"]] ],
+      "x": [financial_data[-1]["time"]],
+      "y": [financial_data[-1]["close"]],
       "type": "scatter"
     }
 
     trace2 = {
-      "x": [ [financial_data[-1]["time"]] ],
+      "x": [financial_data[-1]["time"]],
       "y": [positive],
       "type": "scatter"
     }
     data = Data([trace1, trace2])
-    plot_url = py.plot(data, filename='btc_positivos', fileopt='extend')
+    print(data)
+    py.plot(data, filename='btc_positivos_test', fileopt='extend')
 
 
 def update_negative_sentimental_graph(financial_data, negative):
     trace1 = {
-      "x": [ [financial_data[-1]["time"]] ],
-      "y": [ [financial_data[-1]["close"]] ],
+      "x": [financial_data[-1]["time"]],
+      "y": [financial_data[-1]["close"]],
       "type": "scatter"
     }
 
     trace2 = {
-      "x": [ [financial_data[-1]["time"]] ],
+      "x": [financial_data[-1]["time"]],
       "y": [negative],
       "type": "scatter"
     }
     data = Data([trace1, trace2])
-    plot_url = py.plot(data, filename='btc_negativos', fileopt='extend')
+    print(data)
+    py.plot(data, filename='btc_negativos_test', fileopt='extend')
 
 
 def main():
